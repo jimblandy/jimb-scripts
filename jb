@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Wrapper script to be placed in ~/bin.
+# To invoke a jimb-script subcommand, use:
+#
+#   $ jb COMMAND ARGS...
+#
+# This looks for a script named COMMAND in ~/jimb-scripts/bin,
+# and then runs it with ~/jimb/scripts/subr added to $PATH.
+
+jb=$HOME/jimb-scripts
+PATH=$jb/subr:$PATH
+cmd=$1
+shift
+
+if ! [ -x "$jb/bin/$cmd" ]; then
+    echo "No such jb subcommand: $cmd" >&2
+    exit 1
+fi
+
+exec $jb/bin/$cmd "$@"

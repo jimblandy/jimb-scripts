@@ -1,0 +1,33 @@
+# -*- mode: sh -*-
+
+complete_jb () {
+    if [ "$1" != "jb" ]; then return; fi
+
+    local word=$2
+
+    if [ $COMP_CWORD = 1 ]; then
+        # Complete the name of a 'jb' subcommand.
+        case "$word" in
+            */*)
+                COMPREPLY=()
+                ;;
+            *)
+                COMPREPLY=($(find ~/jimb-scripts/bin -maxdepth 1 -name "$2*" -executable ! -name '*~' \
+                    -printf '%P\n'))
+                ;;
+        esac
+    elif [ "$COMP_CWORD" -ge 2 ]; then
+        # We're completing an argument to some subcommand.
+        case "${COMP_WORDS[1]}" in
+
+            # Example: Name of a dot-jbconfig-blah file
+            # 'config')
+            #     COMPREPLY=($(cd ~/jimb-scripts/jbconfigs; \
+            #                  ls "${word}"* 2> /dev/null \
+            #                  | sed -e '/~$/d' \
+            #                        -e 's/^dot-jbconfig-//'))
+            #     ;;
+        esac
+    fi
+}
+complete -o bashdefault -F complete_jb jb

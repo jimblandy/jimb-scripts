@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+full=false
+while [[ "${1:-}" =~ ^- ]]; do
+    option=$1; shift
+    case "$option" in
+        --full) full=true ;;
+        *)
+            echo "Unrecognized option: $option">&2
+            exit 1
+            ;;
+    esac
+done
+
+if [[ ! "$PWD" =~ /Vulkan-Loader$ ]]; then
+    echo "Run in Vulkan-Loader source tree." >&2
+    exit 1
+fi
+
+if $full; then
+    rm -rf build
+    mkdir build
+    set -x
+    cd build
+    python ../scripts/update_deps.py
+    cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja -C helper.cmake ..
+fi
+
+cd build
+ninja
