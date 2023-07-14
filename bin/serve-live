@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+serve_live=$HOME/serve-live
+(
+    cd $serve_live
+    cargo build --release
+)
+
+exec $serve_live/target/release/serve-live "$@"

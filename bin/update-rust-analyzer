@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -eu
+
+cd ~/rust-analyzer
+git checkout release
+git pull
+cargo +stable install --path crates/rust-analyzer --locked --force --features force-always-assert

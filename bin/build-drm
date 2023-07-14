@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+clean=false
+
+while [[ "${1:-}" =~ ^- ]]; do
+    option=$1; shift
+    case "$option" in
+        --clean) clean=true ;;
+        *)
+            echo "Unrecognized option: $option">&2
+            exit 1
+            ;;
+    esac
+done
+
+if [[ ! "$PWD" =~ /drm$ ]]; then
+    echo "Run at top of DRM source tree." >&2
+    exit 1
+fi
+
+if $clean; then
+    rm -rf build
+    mkdir build
+    (
+        set -x
+        cd build
+        meson ..
+    )
+fi    
+
+set -x
+cd build
+ninja

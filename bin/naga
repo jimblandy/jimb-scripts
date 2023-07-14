@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+naga=$HOME/rust/naga
+manifest=$naga/Cargo.toml
+target_dir=$naga/target
+exec cargo run --quiet --release --manifest-path="$manifest" --target-dir="$target_dir" -- "$@"

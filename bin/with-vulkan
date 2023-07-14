@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -eu
+
+icd=radeon
+
+while true; do
+    case "$1" in
+        --radeon) icd=radeon ;;
+        --lavapipe) icd=lavapipe ;;
+        --intel) icd=intel ;;
+        -*)
+            echo "Unrecognized flag: $1" >&2
+            exit 1
+            ;;
+        *) break ;;
+    esac
+    shift
+done
+
+validation_layer=$HOME/Vulkan-ValidationLayers/build/layers
+if ! [ -d "$validation_layer" ]; then
+    echo "Validation layer directory not found: $validation_layer" >&2
+    exit 1
+fi
+
+mesa_build=$HOME/mesa/build
+case $icd in
+    radeon)
+        icd_path=$mesa_build/src/amd/vulkan/radeon_devenv_icd.x86_64.json
+        ;;
+    lavapipe)
+        icd_path=$mesa_build/src/gallium/targets/lavapipe/lvp_devenv_icd.x86_64.json
+        ;;
+    intel)
+        icd_path=$mesa_build/src/intel/vulkan/intel_devenv_icd.x86_64.json
+        ;;
+esac
+if ! [ -f "$icd_path" ]; then
+    echo "Vulkan ICD manifest not found: $icd_path" >&2
+    exit 1
+fi
+
+WGPU_BACKEND=vulkan VK_ICD_FILENAMES=$icd_path VK_LAYER_PATH=$validation_layer exec "$@"

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -eu
+
+crate=$1
+git=$2
+rev=$3
+
+(
+    cd $git
+    if ! git diff --quiet; then
+        echo "Git checkout has uncommitted changes: $git" >&2
+        exit 1
+    fi
+    git checkout $rev
+)
+
+diff --recursive --unified --ignore-trailing-space      \
+     --exclude Cargo.toml --exclude target              \
+     "$crate" "$git"

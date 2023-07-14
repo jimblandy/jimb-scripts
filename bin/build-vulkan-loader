@@ -3,11 +3,14 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-full=false
+clean=false
+build_type=Debug
+
 while [[ "${1:-}" =~ ^- ]]; do
     option=$1; shift
     case "$option" in
-        --full) full=true ;;
+        --clean) clean=true ;;
+        --release) build_type=Release ;;
         *)
             echo "Unrecognized option: $option">&2
             exit 1
@@ -16,18 +19,24 @@ while [[ "${1:-}" =~ ^- ]]; do
 done
 
 if [[ ! "$PWD" =~ /Vulkan-Loader$ ]]; then
-    echo "Run in Vulkan-Loader source tree." >&2
+    echo "Run at top of Vulkan-Loader source tree." >&2
     exit 1
 fi
 
-if $full; then
+if $clean; then
     rm -rf build
     mkdir build
     set -x
-    cd build
-    python ../scripts/update_deps.py
-    cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja -C helper.cmake ..
-fi
+    (
+        cd build
+        python ../scripts/update_deps.py
+        cmake -D CMAKE_EXPORT_COMPILE_COMMANDS=ON       \
+              -D CMAKE_BUILD_TYPE=$build_type           \
+              -G Ninja                                  \
+              -C helper.cmake                           \
+              ..
+    )
+fi    
 
 cd build
 ninja
