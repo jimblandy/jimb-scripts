@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -eu
+
+name=$1
+version=$2
+
+archive=${name}-${version}.tar.gz
+wget "https://crates.io/api/v1/crates/${name}/${version}/download" -O "${archive}"
+tar xf "${archive}"
