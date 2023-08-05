@@ -7,16 +7,17 @@
 # This looks for a script named COMMAND in ~/jimb-scripts/bin,
 # and then runs it with ~/jimb/scripts/subr added to $PATH.
 
+jb=$HOME/jimb-scripts
+PATH=$jb/subr:$PATH
+
 if [ "${1+set}" != "set" ]; then
     echo "usage: jb COMMAND ARGS..." >&2
+    echo "Run COMMAND from $jb/bin" >&2 
     exit 1
 fi
 
 cmd=$1
 shift
-
-jb=$HOME/jimb-scripts
-PATH=$jb/subr:$PATH
 
 if ! [ -x "$jb/bin/$cmd" ]; then
     echo "No such jb subcommand: $cmd" >&2
