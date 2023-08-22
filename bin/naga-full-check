@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+set -eu
+
+if ! [ -f CHANGELOG.md ]; then
+    echo "Run in top directory of package." >&2
+    exit 1
+fi
+
+MSRV=+1.65
+
+set -x
+
+cargo $MSRV fmt
+cargo $MSRV clippy --all-features --workspace -- -D warnings
+
+cargo nextest run --all-features --workspace
+cargo xtask validate wgsl
+cargo xtask validate spv
+cargo xtask validate glsl
+
+set +x # this affects $(...) capture, apparently
+if ! output=$(cargo xtask validate hlsl dxc 2>&1); then
+    echo "$output" >&2
+    echo "HLSL validation failed" >&2
+    exit 1
+fi
+set -x
+
+# The no-features case.
+cargo nextest run -p naga
+
+# Make sure all documentation builds.
+RUSTDOCFLAGS='-Dwarnings' cargo doc -p naga --all-features --no-deps --document-private-items
+
+# Check MSRV compatibility.
+# Newer Rust versions don't like reading the metadata
+cargo $MSRV check --all-features

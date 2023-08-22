@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+WGPU=/home/jimb/rust/wgpu
+
+try_cargo_doc=true
+if [[ "$(git status)" =~ "On branch arcanization" ]]; then
+    try_cargo_doc=false
+fi
+
+set -eux
+
+cargo fmt
+cargo clippy --workspace -- -D warnings
+if $try_cargo_doc; then
+    cargo doc -p wgpu-core --document-private-items \
+          --all-features
+    #      --features="vulkan gles trace replay serial-pass id32 wgsl vulkan-portability" 
+else
+    : "Skipping cargo doc: https://github.com/rust-lang/rust/issues/114891"
+fi
+
+# "When RUSTFLAGS is changed between invocations, this can trigger a complete rebuild."
+# https://github.com/rust-lang/cargo/issues/8716
+# Using a separate target directory avoids affecting other builds.
+CARGO_TARGET_DIR=$WGPU/jimb-wasm-target \
+    RUSTFLAGS=--cfg=web_sys_unstable_apis \
+    cargo clippy \
+    --target wasm32-unknown-unknown \
+    --features="gles"
+    #-- -A manual_clamp
+
+# -A clippy::manual-clamp -A clippy::unnecessary-cast
+WGPU_BACKEND=vulkan                             \
+    cargo nextest run                           \
+    --workspace                                 \
+    --no-fail-fast                              \
+    --exclude cts_runner

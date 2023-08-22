@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+clean=false
+build_type=Debug
+
+while [[ "${1:-}" =~ ^- ]]; do
+    option=$1; shift
+    case "$option" in
+        --clean) clean=true ;;
+        --release) build_type=Release ;;
+        *)
+            echo "Unrecognized option: $option">&2
+            exit 1
+            ;;
+    esac
+done
+
+if [[ ! "$PWD" =~ /Vulkan-ValidationLayers$ ]]; then
+    echo "Run at top of Vulkan-ValidationLayers source tree." >&2
+    exit 1
+fi
+
+if $clean; then
+    rm -rf                                      \
+       build                                    \
+       glslang/build                            \
+       Vulkan-Headers/build                     \
+       SPIRV-Headers/build                      \
+       SPIRV-Tools/build                        \
+       robin-hood-hashing/build                 \
+       googletest/build
+    python ./scripts/update_deps.py
+    cmake -S .                                  \
+          -B build                              \
+          -G Ninja                              \
+          -C helper.cmake                       \
+          -D UPDATE_DEPS=ON                     \
+          -D BUILD_WERROR=ON                    \
+          -D BUILD_TESTS=ON                     \
+          -D CMAKE_BUILD_TYPE=$build_type       \
+          -D CMAKE_EXPORT_COMPILE_COMMANDS=ON
+fi    
+
+cd build
+ninja
