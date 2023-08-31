@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+MOZ_IGNORE_WARNINGS=1 \
+    RUST_LOG="webrender::device::gl=error" \
+    MOZ_IPC_MESSAGE_LOG="PWebGPU" \
+    exec "$@"
