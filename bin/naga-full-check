@@ -2,8 +2,8 @@
 
 set -eu
 
-if ! [ -f CHANGELOG.md ]; then
-    echo "Run in top directory of package." >&2
+if ! [ -f tests/snapshots.rs ]; then
+    echo "Run in wgpu/naga directory." >&2
     exit 1
 fi
 
