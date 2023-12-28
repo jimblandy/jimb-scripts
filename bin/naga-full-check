@@ -7,7 +7,7 @@ if ! [ -f tests/snapshots.rs ]; then
     exit 1
 fi
 
-MSRV=+1.65
+MSRV=+1.70
 
 set -x
 
