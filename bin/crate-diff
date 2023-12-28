@@ -15,6 +15,6 @@ rev=$3
     git checkout $rev
 )
 
-diff --recursive --unified --ignore-trailing-space      \
-     --exclude Cargo.toml --exclude target              \
+diff --recursive --unified --ignore-trailing-space              \
+     --exclude Cargo.toml --exclude Cargo.lock --exclude target \
      "$crate" "$git"
