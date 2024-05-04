@@ -33,4 +33,4 @@ fi
 
 set -x
 cd build
-ninja
+ninja -j50

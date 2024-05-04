@@ -3,18 +3,31 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+drm_build=$HOME/drm/build
+
 clean=false
+system_drm=false
 
 while [[ "${1:-}" =~ ^- ]]; do
     option=$1; shift
     case "$option" in
         --clean) clean=true ;;
+        --system-drm) system_drm=true ;;
         *)
             echo "Unrecognized option: $option">&2
             exit 1
             ;;
     esac
 done
+
+pkg_cfg_path=
+if ! $system_drm; then
+    if ! [ -d $drm_build/meson-uninstalled ]; then
+        echo "Using local DRM build, since `--system-drm` wasn't passed, but $drm_build/meson-uninstalled directory does not exist" >&2
+        exit 1
+    fi
+    export PKG_CONFIG_PATH=$drm_build/meson-uninstalled
+fi
 
 if [[ ! "$PWD" =~ /mesa$ ]]; then
     echo "Run at top of mesa source tree." >&2
@@ -33,4 +46,4 @@ fi
 
 set -x
 cd build
-ninja
+ninja -j50

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -eu
+
+if [ -d ~/.local/share/rr ]; then
+    rm -rf ~/.local/share/rr
+fi

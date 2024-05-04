@@ -6,9 +6,9 @@ icd=radeon
 
 while true; do
     case "$1" in
-        --radeon) icd=radeon ;;
+        --radeon)   icd=radeon   ;;
         --lavapipe) icd=lavapipe ;;
-        --intel) icd=intel ;;
+        --intel)    icd=intel    ;;
         -*)
             echo "Unrecognized flag: $1" >&2
             exit 1
@@ -41,4 +41,4 @@ if ! [ -f "$icd_path" ]; then
     exit 1
 fi
 
-WGPU_BACKEND=vulkan VK_ICD_FILENAMES=$icd_path VK_LAYER_PATH=$validation_layer exec "$@"
+VK_ICD_FILENAMES=$icd_path VK_LAYER_PATH=$validation_layer exec "$@"

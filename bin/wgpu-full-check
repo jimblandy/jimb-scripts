@@ -3,7 +3,7 @@
 WGPU=/home/jimb/rust/wgpu
 
 try_cargo_doc=true
-if [[ "$(git status)" =~ "On branch arcanization" ]]; then
+if [[ "$(rustdoc --version 2>&1)" =~ "1.76" ]]; then
     try_cargo_doc=false
 fi
 

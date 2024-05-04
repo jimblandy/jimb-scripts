@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+export MESA_SHADER_CACHE_DISABLE=1
+exec "$@"

@@ -7,7 +7,7 @@ if ! [ -f tests/snapshots.rs ]; then
     exit 1
 fi
 
-MSRV=+1.70
+MSRV=+1.74
 
 set -x
 
@@ -16,6 +16,7 @@ cargo $MSRV clippy --all-features -p naga -- -D warnings
 
 cargo nextest run --all-features -p naga
 cargo xtask validate all
+cargo xtask validate hlsl dxc
 
 # The no-features case.
 cargo nextest run -p naga
