@@ -28,8 +28,7 @@ fi
 #     #-- -A manual_clamp
 
 # -A clippy::manual-clamp -A clippy::unnecessary-cast
-WGPU_BACKEND=vulkan                             \
-    cargo nextest run                           \
+cargo nextest run                               \
     --workspace                                 \
     --no-fail-fast                              \
     --exclude cts_runner
