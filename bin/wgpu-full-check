@@ -28,7 +28,4 @@ fi
 #     #-- -A manual_clamp
 
 # -A clippy::manual-clamp -A clippy::unnecessary-cast
-cargo nextest run                               \
-    --workspace                                 \
-    --no-fail-fast                              \
-    --exclude cts_runner
+cargo xtask test
