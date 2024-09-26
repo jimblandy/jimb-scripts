@@ -1,0 +1,10 @@
+#!/usr/bin/gawk -f
+
+/^commit/ { commit = $2 }
+/^Date:/ { commit_date = $2 }
+
+/^build:/ { 
+
+END { print commit }
+
+

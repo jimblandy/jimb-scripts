@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -eu
+
+git log -1 --date=iso
+
+cargo fetch
+
+cargo clean
+echo "build: dev all" >&2
+time cargo --quiet build
+echo
+
+cargo clean -p naga
+echo "build: dev naga" >&2
+time cargo --quiet build
+echo
+
+cargo clean --release
+echo "build: release all" >&2
+time cargo --quiet build --release
+echo
+
+cargo clean -p naga --release
+echo "build: release naga" >&2
+time cargo --quiet build --release
+echo

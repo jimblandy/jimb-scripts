@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -eu
+
+case "$1" in
+    *.spv)
+        base=${1/.spv/}
+        ;;
+    *.spvasm)
+        base=${1/.spvasm/}
+        spirv-as $base.spvasm -o $base.spv
+esac
+
+out=$base
+shift
+
+spirv-val $base.spv && echo "spirv-val: okay"
+naga --index-bounds-check-policy Restrict \
+     --buffer-bounds-check-policy Unchecked \
+     --image-bounds-check-policy ReadZeroSkipWrite \
+     $base.spv $out.txt $out.wgsl "$@"
+cat $out.wgsl

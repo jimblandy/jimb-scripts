@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -eu
+
+base=${1/.wgsl/}
+shift
+
+naga --index-bounds-check-policy ReadZeroSkipWrite \
+     --buffer-bounds-check-policy Unchecked \
+     --image-bounds-check-policy Restrict \
+     $base.wgsl $base.txt $base.metal "$@"
+cat $base.metal
