@@ -4,6 +4,9 @@ case "$PWD" in
     "/home/jimb/rust/wgpu" | "/home/jimb/rust/wgpu/"*)
         export CARGO_TARGET_DIR=/home/jimb/jimb-alt-target-wgpu
         ;;
+    "/home/jimb/wgpu" | "/home/jimb/wgpu/"*)
+        export CARGO_TARGET_DIR=/home/jimb/jimb-alt-target-wgpu
+        ;;
     *)
         echo "Not sure what alterative CARGO_TARGET_DIR to use for $PWD" >&2
         exit 1
