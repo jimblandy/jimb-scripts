@@ -2,20 +2,11 @@
 
 WGPU=/home/jimb/rust/wgpu
 
-try_cargo_doc=true
-if [[ "$(rustdoc --version 2>&1)" =~ "1.76" ]]; then
-    try_cargo_doc=false
-fi
-
 set -eux
 
 cargo fmt
 cargo clippy --workspace -- -D warnings
-if $try_cargo_doc; then
-    cargo doc --target x86_64-unknown-linux-gnu --all-features --no-deps --document-private-items
-else
-    : "Skipping cargo doc: https://github.com/rust-lang/rust/issues/114891"
-fi
+cargo doc --target x86_64-unknown-linux-gnu --all-features --no-deps --document-private-items
 
 # # "When RUSTFLAGS is changed between invocations, this can trigger a complete rebuild."
 # # https://github.com/rust-lang/cargo/issues/8716
