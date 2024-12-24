@@ -11,8 +11,8 @@ MSRV=+1.76
 
 set -x
 
-cargo $MSRV fmt
-cargo $MSRV clippy --all-features -p naga -- -D warnings
+cargo fmt
+cargo clippy --all-features -p naga -- -D warnings
 
 cargo nextest run --all-features -p naga
 cargo xtask validate all
