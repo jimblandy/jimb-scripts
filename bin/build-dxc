@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ ! "$PWD" =~ /DirectXShaderCompiler$ ]]; then
+    echo "Run at top of DirectXShaderCompiler source tree." >&2
+    exit 1
+fi
+
+clean=false
+build_type=Debug
+
+while [[ "${1:-}" =~ ^- ]]; do
+    option=$1; shift
+    case "$option" in
+        --clean) clean=true ;;
+        --release) build_type=Release ;;
+        *)
+            echo "Unrecognized option: $option">&2
+            exit 1
+            ;;
+    esac
+done
+
+if $clean; then
+    rm -rf build
+fi
+mkdir -p build
+cd build
+
+# Firefox's build-dxc.sh script also says:
+#
+#  -DHLSL_INCLUDE_TESTS=OFF                      \
+#  -DCLANG_INCLUDE_TESTS=OFF                     \
+#  -DLLVM_INCLUDE_TESTS=OFF                      \
+#
+# but we would actually like the tests, thank you very much
+
+cmake ..                                        \
+  -C ../cmake/caches/PredefinedParams.cmake     \
+  -DCMAKE_BUILD_TYPE=$build_type                \
+  -DHLSL_BUILD_DXILCONV=OFF                     \
+  -DSPIRV_WERROR=OFF                            \
+  -DENABLE_SPIRV_CODEGEN=OFF                    \
+  -DLLVM_ENABLE_ASSERTIONS=ON                   \
+  -DLLVM_ASSERTIONS_NO_STRINGS=ON               \
+  -DLLVM_ASSERTIONS_TRAP=ON                     \
+  -DDXC_CODEGEN_EXCEPTIONS_TRAP=ON              \
+  -DDXC_DISABLE_ALLOCATOR_OVERRIDES=ON          \
+  -G Ninja
+
+ninja
+
