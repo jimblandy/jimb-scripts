@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+clean=false
+build_type=Debug
+
+while [[ "${1:-}" =~ ^- ]]; do
+    option=$1; shift
+    case "$option" in
+        --clean) clean=true ;;
+        --release) build_type=Release ;;
+        *)
+            echo "Unrecognized option: $option">&2
+            exit 1
+            ;;
+    esac
+done
+
+if [[ ! "$PWD" =~ /SPIRV-Tools$ ]]; then
+    echo "Run at top of SPIRV-Tools source tree." >&2
+    exit 1
+fi
+
+if $clean; then
+    rm -rf build
+    python3 ./utils/git-sync-deps
+    cmake -S .                                  \
+          -B build                              \
+          -G Ninja                              \
+          -D CMAKE_BUILD_TYPE=$build_type       \
+          -D CMAKE_EXPORT_COMPILE_COMMANDS=ON
+fi    
+
+cd build
+ninja -j50
