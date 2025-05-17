@@ -12,7 +12,11 @@ MSRV=+1.82
 set -x
 
 cargo fmt
-cargo clippy --all-features -p naga -- -D warnings
+taplo format
+cargo clippy --all-features -p naga --tests -- -D warnings
+
+# Make sure all documentation builds.
+RUSTDOCFLAGS='-Dwarnings' cargo doc -p naga --all-features --no-deps --document-private-items
 
 cargo nextest run --all-features -p naga
 cargo xtask validate all
@@ -20,9 +24,6 @@ cargo xtask validate hlsl dxc
 
 # The no-features case.
 cargo nextest run -p naga
-
-# Make sure all documentation builds.
-RUSTDOCFLAGS='-Dwarnings' cargo doc -p naga --all-features --no-deps --document-private-items
 
 # Check MSRV compatibility.
 # Newer Rust versions don't like reading the metadata
