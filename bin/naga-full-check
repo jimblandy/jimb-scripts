@@ -2,7 +2,7 @@
 
 set -eu
 
-if ! [ -f tests/snapshots.rs ]; then
+if ! [ -f tests/naga/snapshots.rs ]; then
     echo "Run in wgpu/naga directory." >&2
     exit 1
 fi
