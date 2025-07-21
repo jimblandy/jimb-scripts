@@ -45,4 +45,4 @@ if $clean; then
 fi    
 
 cd build
-ninja -j50
+ninja -j12
