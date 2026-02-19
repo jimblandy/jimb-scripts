@@ -3,7 +3,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-drm_build=$HOME/drm/build
+drm_build=$HOME/libdrm/build
 
 clean=false
 system_drm=false
