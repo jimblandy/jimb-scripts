@@ -16,7 +16,7 @@ while [[ "${1:-}" =~ ^- ]]; do
     esac
 done
 
-if [[ ! "$PWD" =~ /drm$ ]]; then
+if [[ ! "$PWD" =~ /libdrm$ ]]; then
     echo "Run at top of DRM source tree." >&2
     exit 1
 fi
@@ -27,7 +27,7 @@ if $clean; then
     (
         set -x
         cd build
-        meson ..
+        meson -Dintel=enabled ..
     )
 fi    
 
