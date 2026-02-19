@@ -42,6 +42,7 @@ cmake ..                                        \
   -DHLSL_BUILD_DXILCONV=OFF                     \
   -DSPIRV_WERROR=OFF                            \
   -DENABLE_SPIRV_CODEGEN=OFF                    \
+  -DSPIRV_BUILD_TESTS=OFF                       \
   -DLLVM_ENABLE_ASSERTIONS=ON                   \
   -DLLVM_ASSERTIONS_NO_STRINGS=ON               \
   -DLLVM_ASSERTIONS_TRAP=ON                     \
