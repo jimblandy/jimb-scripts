@@ -3,18 +3,9 @@
 set -eu
 
 crate=$1
-git=$2
-rev=$3
-
-(
-    cd $git
-    if ! git diff --quiet; then
-        echo "Git checkout has uncommitted changes: $git" >&2
-        exit 1
-    fi
-    git checkout $rev
-)
+reva=$2
+revb=$3
 
 diff --recursive --unified --ignore-trailing-space              \
      --exclude Cargo.toml --exclude Cargo.lock --exclude target \
-     "$crate" "$git"
+     "$crate-$reva" "$crate-$revb"
